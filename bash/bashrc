@@ -167,6 +167,7 @@ function jscreen() {
         echo "Usage: jscreen ssh-destination [ssh-command]"
     else
         DEST=$1  #we know if we are here, we have at least a $1
+	SCREEN_TITLE=$DEST
         shift
         if [ -z "$@" ]
         then
