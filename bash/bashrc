@@ -1,0 +1,202 @@
+#!/bin/sh
+
+# To use this file, add the following to your ~/.bashrc:
+#
+# if [ -f  ~/git_resources/bashrc ]; then
+#        . ~/git_resources/bashrc
+# fi
+
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/git_resources/bash/bash_aliases ]; then
+    . ~/git_resouraces/bash/bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+AD_USER="mporter"
+OKTA_USERNAME=mporter
+BASTION_SERVER=34.223.248.104
+BASTION_USERNAME=ec2-user
+BASTION_PORT=5190
+
+CVS_RSH="ssh"
+
+function jump() {
+    if [ -z $1 ]
+    then
+        #echo "Usage: jump [destination/command]"
+        if ! [ -z $DEBUG ]
+        then
+            echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$BASTION_SERVER"
+        fi
+        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER
+    elif [ "$1" = "-?" ]
+        then
+        echo "Usage: jump [destination/command]"
+        else
+                DEST=$1  #if we made it this far, there's at least a $1
+        settitle $DEST
+        shift
+        if [ -z "$@" ]
+        then
+            if ! [ -z $DEBUG ]
+                    then
+                            echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$DESKTOP jscreen $DEST"
+                    fi
+                    /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "jscreen $DEST"
+            else
+            if ! [ -z $DEBUG ]
+            then
+                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$DESKTOP ssh $DEST \"$@\""
+            fi
+                    /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "ssh  $DEST \"$@\" "
+            fi
+    fi
+        }
+
+function screens() {
+    /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "screen -ls"
+    }
+
+function vader() {
+        /usr/bin/ssh -t -A $BASTION_USERNAME@$BASTION_SERVER -p $BASTION_PORT \"ssh -t -A geekstuff@vader.porterfam.us\"
+        }
+
+function pie() {
+        /usr/bin/ssh -t -A -Y -p 5280 mupi@pi.porterfam.us
+        }
+
+
+function settitle () {
+    if [ -z $1 ]
+    then
+        echo "settitle attempts to determine the type of box based on the box-name passed to it."
+        echo "    --> this is obviously a work in progress <--"
+        echo
+        echo "Usage: settitle boxname"
+    fi
+    case $1 in
+        box*)       title "$1 b-u-$BASTION_USERNAME";
+        ;;
+        just*)      title "$1 j-u-$BASTION_USERNAME";
+        ;;
+        fast*)      title "$1 f-u-$BASTION_USERNAME";
+        ;;
+        host*)      title "$1 h-u-$BASTION_USERNAME";
+        ;;
+                rsj*)       title "$1 j-u-$BASTION_USERNAME";
+        ;;
+        rsb*)       title "$1 b-u-$BASTION_USERNAME";
+        ;;
+        *mail*)     title "$1 maillive-$BASTION_USERNAME";
+        ;;
+        *xen*)      title "$1 xen-$BASTION_USERNAME";
+        ;;
+        s*.shared)  title "$1 xen-$BASTION_USERNAME";
+        ;;
+        v*.vps)     title "$1 ulhg-$BASTION_USERNAME";
+        ;;
+        *) title $1;
+    esac
+
+}
+
+function title {
+    echo -en "\033]2;$1\007"
+    SCREEN_TITLE=$1
+}
+
+function jj() {
+    if [ -z $1 ]
+    then
+        echo "Usage: jj ssh-destination [ssh-command]"
+    else
+        DEST=$1  #we know if we are here, we have at least a $1
+        shift
+        if [ -z "$@" ]
+        then
+            if ! [ -z $DEBUG ]
+            then
+                echo "running: jump $DEST"
+            fi
+            jump $DEST
+        else
+            if ! [ -z $DEBUG ]
+            then
+                echo "running: jump $DEST $@"
+            fi
+       jump $DEST $@
+       fi
+    fi
+    }
+
+function jscreen() {
+    if [ -z $1 ]
+    then
+        echo "Usage: jscreen ssh-destination [ssh-command]"
+    else
+        DEST=$1  #we know if we are here, we have at least a $1
+        shift
+        if [ -z "$@" ]
+        then
+            if ! [ -z $DEBUG ]
+            then
+                echo "running: screen -S $DEST -t $SCREEN_TITLE -D -R /usr/bin/ssh -t -A $DEST"
+            fi
+            screen -S $DEST -t $SCREEN_TITLE -D -R /usr/bin/ssh -t -A  $DEST
+        else
+            if ! [ -z $DEBUG ]
+            then
+                echo "running screen -S $DEST -t $SCREEN_TITLE -D -R \"/usr/bin/ssh -t -A $DEST \"$@\""
+            fi
+            screen -S $DEST -t $SCREEN_TITLE -D -R "/usr/bin/ssh -t -A $DEST \"$@\""
+        fi
+    fi
+    }
+
+function restore() {
+    for i in $(screens | awk '/tached/ {print $1}' | cut -d. -f2)
+    do
+        echo restoring $i...
+        terminator -e "jj $i"
+
+    done
+
+    }
+
+#alias z="/usr/bin/ssh -t -A $BASTION_USERNAME@$BASTION_SERVER -p $BASTION_PORT"
+#alias zz="/usr/bin/ssh -t -A $BASTION_USERNAME@$BASTION_SERVER -p $BASTION_PORT \"ssh $1\""
+
+alias sadd='ssh-add -t 12H $HOME/.ssh/id_rsa'
+alias rc="ssh -t -A -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER \"ssh -t rc \"console $1\"\""

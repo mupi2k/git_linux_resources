@@ -1,0 +1,32 @@
+Host *
+     MACs hmac-sha2-256,hmac-md5,hmac-sha1,umac-64@openssh.com
+
+Host ovpn
+    HostName vpn.sentinel.vivintsolar.com
+    User ec2-user
+
+Host ovpns
+    HostName vpn.stage.sentinel.vivintsolar.com
+    User ec2-user
+
+Host jump
+    HostName 34.223.248.104
+    User ec2-user
+    ServerAliveInterval 60
+    IdentityFile ~/.ssh/tvalletta-ec2.pem
+
+Host jenkinsdebian
+    HostName 192.168.112.151
+    User admin
+
+Host saltmaster
+    HostName 52.11.162.191
+    User ec2-user
+    IdentityFile ~/.ssh/tvalletta-ec2.pem
+    ServerAliveInterval 60
+
+Host aptly
+    HostName 52.42.240.14
+    User ubuntu
+    IdentityFile ~/.ssh/tvalletta-ec2.pem
+    ServerAliveInterval 60
