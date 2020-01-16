@@ -7,7 +7,7 @@ To use this resource:
 ```mkdir ~/git_resources && cd ~/git_resources ```
 
 2) clone this repo:
-```git clone https://github.com/mupi2k/git_linux_resources.git```
+```git clone https://github.com/mupi2k/git_linux_resources.git .```
 
 
 3) to use the resources here for ssh config, add the following to the TOP of your ~/.ssh/config:
