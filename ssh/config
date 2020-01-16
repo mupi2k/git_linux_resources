@@ -1,3 +1,10 @@
+#
+# to use this file add the following to the TOP of your ~/.ssh/config:
+#
+#    Include ~/git_resources/ssh/config
+#
+#
+
 Host *
      MACs hmac-sha2-256,hmac-md5,hmac-sha1,umac-64@openssh.com
 
@@ -11,6 +18,7 @@ Host ovpns
 
 Host jump
     HostName 34.223.248.104
+    Port 5190
     User ec2-user
     ServerAliveInterval 60
     IdentityFile ~/.ssh/tvalletta-ec2.pem
