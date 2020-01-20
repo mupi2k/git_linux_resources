@@ -19,9 +19,7 @@ Host ovpns
 Host jump
     HostName 34.223.248.104
     Port 5190
-    User ec2-user
     ServerAliveInterval 60
-    IdentityFile ~/.ssh/tvalletta-ec2.pem
 
 Host jenkinsdebian
     HostName 192.168.112.151
@@ -30,11 +28,9 @@ Host jenkinsdebian
 Host saltmaster
     HostName 52.11.162.191
     User ec2-user
-    IdentityFile ~/.ssh/tvalletta-ec2.pem
     ServerAliveInterval 60
 
 Host aptly
     HostName 52.42.240.14
     User ubuntu
-    IdentityFile ~/.ssh/tvalletta-ec2.pem
     ServerAliveInterval 60
