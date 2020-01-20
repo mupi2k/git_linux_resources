@@ -1,0 +1,60 @@
+#!/bin/sh
+
+###############################################################################
+##  git_linux_resources/bash/functions
+##     functions for bashrc
+##
+
+# see ../readme.md
+
+function title {
+    echo -en "\033]2;$1\007"
+    SCREEN_TITLE=$1
+}
+
+function jump() {
+    if [ -z $1 ]; then
+        #echo "Usage: jump [destination/command]"
+        if ! [ -z $DEBUG ]; then
+            echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$BASTION_SERVER"
+        fi
+        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER
+    elif [ "$1" = "-?" ]; then
+        echo "Usage: jump [destination/command]"
+    else
+        DEST=$1  #if we made it this far, there's at least a $1
+        title $DEST
+        shift
+        if [ -z "$@" ]; then
+            if ! [ -z $DEBUG ]; then
+                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$DESKTOP jscreen $DEST"
+            fi
+            /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "jscreen $DEST"
+        else
+            if ! [ -z $DEBUG ]; then
+                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$DESKTOP ssh $DEST \"$@\""
+            fi
+        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "ssh  $DEST \"$@\" "
+        fi
+    fi
+}
+
+function jj() {
+    if [ -z $1 ]; then
+        echo "Usage: jj ssh-destination [ssh-command]"
+    else
+        DEST=$1  #we know if we are here, we have at least a $1
+        shift
+        if [ -z "$@" ]; then
+            if ! [ -z $DEBUG ]; then
+                echo "running: jump $DEST"
+            fi
+            jump $DEST
+        else
+            if ! [ -z $DEBUG ]; then
+                echo "running: jump $DEST $@"
+            fi
+            jump $DEST $@
+       fi
+    fi
+}

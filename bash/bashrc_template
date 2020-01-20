@@ -1,0 +1,66 @@
+# base definitions used throughout the bashrc system:
+
+# Usernames.  Set at least one of these.  Several functions use these later.
+#   For affected functions, you can also specify different users for each _USERNAME
+#   For example, you can use ec2-user as the BASTION_USERNAME to connect to an EC2 instance.
+#   You can also override that for a single function call or session by manually setting the variable.
+
+AD_USER=""
+OKTA_USERNAME=$AD_USER
+BASTION_USERNAME=$AD_USER
+
+# used by CVS, if you use that instead of git, you may need this
+CVS_RSH="ssh"
+
+# used by a few functions to allow changing the behavior when behind a firewall:
+# if you are behind a corp firewall that restricts
+REMOTE="YES"
+
+# Servernames.  Set at least $BASTION_SERVER for the jump functions to work as intended.
+#   If you want to have different bastion functions, you can set additional bastions as needed
+#   For example: $EC2_BASTION or $SALT_BASTION
+
+#  $BASTION_SERVER can be an IP address or resolvable SSH host (can be definined in ~/.ssh/config)
+#  Specify a $BASTION_PORT for each $BASTION_SERVER unless using ssh config hosts, or port 22
+BASTION_SERVER=34.223.248.104
+BASTION_PORT=5190
+
+# Paths.  Set at least $GIT_PATH to wherever you cloned the git linux resource repo to.
+GIT_PATH="/home/$USER/git_resources"
+
+# Settings.  This allows you to tweak the modules loaded at run time.
+#   For example, if you don't want to load IPMI modules, simply leave $USE_IPMI unset.
+#   Most of these will be pulled in later...
+#
+USE_INTERACTIVE="yes"
+# USE_IPMI="YES"
+USE_MOXA="YES"
+USE_FUNCTIONS="YES"
+USE_ALIASES="YES"
+#USE_EIGI="YES"
+USE_SCREEN="YES"
+#USE_VADER="YES"
+#USE_PIE="YES"
+
+
+##  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ##
+########### DON'T MESS WITH THIS SECTION UNLESS YOU KNOW WHAT YOU ARE DOING!! ################
+##  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ##
+
+if [ -f  $GIT_PATH/bash/bashrc ]; then
+        . $GIT_PATH/bash/bashrc
+fi
+
+# If not running interactively, don't load the interactive stuff:
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+if [ -n $USE_INTERACTIVE ]; then
+       if [ -f $GIT_PATH/bash/interactive ]; then
+              . $GIT_PATH/bash/interactive
+       fi
+fi
+
+#### END OF TEMPLATE FUNCTIONS  ####
