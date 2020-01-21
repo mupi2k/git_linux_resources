@@ -38,6 +38,11 @@ if [ -n $USE_SCREEN ]; then
     fi
 fi
 
+if [ -n $USE_MOXA ]; then
+    if [ -f $GIT_PATH/bash/moxa ]; then
+        . $GIT_PATH/bash/moxa
+    fi
+fi
 
 
 

@@ -28,6 +28,9 @@ BASTION_PORT=5190
 # Paths.  Set at least $GIT_PATH to wherever you cloned the git linux resource repo to.
 GIT_PATH="/home/$USER/git_resources"
 
+# Path where VivintSolar/sentinel-scripts is cloned.
+SENTINEL_PATH="/home/$USER/sentinel-scripts"
+
 # Settings.  This allows you to tweak the modules loaded at run time.
 #   For example, if you don't want to load IPMI modules, simply leave $USE_IPMI unset.
 #   Most of these will be pulled in later...

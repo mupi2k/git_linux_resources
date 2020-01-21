@@ -14,27 +14,27 @@ function title {
 
 function jump() {
     if [ -z $1 ]; then
-        #echo "Usage: jump [destination/command]"
+        #echo "Usage: jump [command]"
         if ! [ -z $DEBUG ]; then
             echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$BASTION_SERVER"
         fi
         /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER
     elif [ "$1" = "-?" ]; then
-        echo "Usage: jump [destination/command]"
+        echo "Usage: jump [command]"
     else
-        DEST=$1  #if we made it this far, there's at least a $1
-        title $DEST
+        CMD=$1  #if we made it this far, there's at least a $1
+        title "JUMP-$CMD"
         shift
         if [ -z "$@" ]; then
             if ! [ -z $DEBUG ]; then
-                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$DESKTOP jscreen $DEST"
+                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$DESKTOP $CMD"
             fi
-            /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "jscreen $DEST"
+            /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER $CMD
         else
             if ! [ -z $DEBUG ]; then
-                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$DESKTOP ssh $DEST \"$@\""
+                echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$DESKTOP  $CMD \"$@\""
             fi
-        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER "ssh  $DEST \"$@\" "
+        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER $CMD "$@" 
         fi
     fi
 }
@@ -47,14 +47,14 @@ function jj() {
         shift
         if [ -z "$@" ]; then
             if ! [ -z $DEBUG ]; then
-                echo "running: jump $DEST"
+                echo "running: jump jscreen $DEST"
             fi
-            jump $DEST
+            jump jscreen $DEST
         else
             if ! [ -z $DEBUG ]; then
-                echo "running: jump $DEST $@"
+                echo "running: jump jscreen $DEST $@"
             fi
-            jump $DEST $@
+            jump jscreen $DEST $@
        fi
     fi
 }
