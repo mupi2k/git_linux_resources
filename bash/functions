@@ -25,7 +25,7 @@ function jump() {
         CMD=$1  #if we made it this far, there's at least a $1
         title "JUMP-$CMD"
         shift
-        if [ -z "$@" ]; then
+        if [ -z "$1" ]; then
             if ! [ -z $DEBUG ]; then
                 echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT  $BASTION_USERNAME@$DESKTOP $CMD"
             fi
@@ -34,7 +34,7 @@ function jump() {
             if ! [ -z $DEBUG ]; then
                 echo "running: /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$DESKTOP  $CMD \"$@\""
             fi
-        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER $CMD "$@" 
+        /usr/bin/ssh -t -A -Y -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER $CMD "$@"
         fi
     fi
 }

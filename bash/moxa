@@ -4,9 +4,10 @@
 #
 #  This file also expects VivintSolar/sentinel-scripts repo to be installed at $SENTINEL_PATH
 
-# jump_ovpn() and jump_ovpns() will establish a connection to the ovpn server from the
-#   jump box.  Still need to add checking to make sure it only runs when the connection
-#   is not established.  This will break things if run when the VPN is up!
+# ovpn() and ovpns() will establish a connection to the ovpn server from the
+#   jump box.  check_ip() should prevent a connection when one already exists.
+#   if screens() doesn't show you an existing screen with an OVPN/OVPNS title, see
+#        if someone else has the connection open.
 
 OVPN_SUBNET=192.168.255
 OVPNS_SUBNET=192.168.16
@@ -31,7 +32,7 @@ function check_ip()  {
 
 function ovpn () {
     if [ -z $1 ]; then
-        #echo "Usage: jump_ovpn [destination/command]"
+        #echo "Usage: ovpn [destination/command]"
         if [ -n $DEBUG ]; then
             echo "running:  screen -S OVPN -t \"PROD\" -D -R sudo openvpn sentinel-prod.ovpn"
         fi
@@ -43,7 +44,7 @@ function ovpn () {
             jump screen -S OVPN -t "PROD" -D -R sudo openvpn sentinel-prod.ovpn
         fi
     elif [ "$1" = "-?" ]; then
-        echo "Usage: jump ovpn"
+        echo "Usage: ovpn"
     fi
 }
 
@@ -61,7 +62,7 @@ function ovpns () {
             jump screen -S OVPNS -t "STAGE" -D -R sudo openvpn sentinel-stage.ovpn
         fi
     elif [ "$1" = "-?" ]; then
-        echo "Usage: jump ovpns"
+        echo "Usage: ovpns"
     fi
 }
 
