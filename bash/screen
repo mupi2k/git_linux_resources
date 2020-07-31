@@ -20,12 +20,12 @@ function jscreen() {
 	      SCREEN_TITLE=$DEST
         shift
         if [ -z "$1" ]; then
-            if ! [ -z $DEBUG ]; then
+            if [ -n $DEBUG ]; then
                 echo "running: screen -S $DEST -t $SCREEN_TITLE -D -R /usr/bin/ssh -t -A $DEST"
             fi
             screen -S $DEST -t $SCREEN_TITLE -D -R /usr/bin/ssh -t -A  $DEST
         else
-            if ! [ -z $DEBUG ]; then
+            if [ -n $DEBUG ]; then
                 echo "running screen -S $DEST -t $SCREEN_TITLE -D -R \"/usr/bin/ssh -t -A $DEST \"$@\""
             fi
             screen -S $DEST -t $SCREEN_TITLE -D -R "/usr/bin/ssh -t -A $DEST \"$@\""
@@ -34,11 +34,27 @@ function jscreen() {
 }
 
 function restore() {
-    for i in $(screens | awk '/tached/ {print $1}' | cut -d. -f2)
-    do
-        echo restoring $i...
-        terminator -e "jj $i"
+    if [ -z "$1" ]; then
+        for i in $(screens | awk '/tached/ {print $1}' | cut -d. -f2)
+        do
+            echo restoring $i...
+            terminator -x ssh -tA jump screen -R -D $i
 
-    done
+        done
+    elif [ "$1" = "-h" ]; then
+        echo " USAGE: restore [screen]"
+    else
+        RESTORED=""
+        for i in $(screens | awk '/tached/ {print $1}' | cut -d. -f2); do
+            if [ "$1" = "$i" ]; then
+                echo "Restoring session to $1..."
+                terminator -x ssh -tA jump screen -D -R $1
+                RESTORED="yay"
+            fi
+        done
+        if [ -z "$RESTORED" ]; then
+            echo "Session to $1 not found!"
+        fi
+    fi
 
-    }
+}
